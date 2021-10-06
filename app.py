@@ -6,10 +6,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 import pymongo
-
-
-
-
+import copy
 def dbConn():
     client  = pymongo.MongoClient("mongodb+srv://dbUser:Password@mustafaloucluster.euggs.mongodb.net/MustafalouCluster?retryWrites=true&w=majority")
     db = client["Mustafalou"]
@@ -112,9 +109,7 @@ class Application(BoxLayout):
         self.db, self.client = dbConn()
         self.collection = self.db.Guns
         self.listeclients = self.collection.find({"Nom": self.inputNom.text})
-        for elem in self.listeclients:
-            print(elem)
-        
+      
         self.ShowClients()
     def ShowClients(self):
         self.clear_widgets()
@@ -123,19 +118,42 @@ class Application(BoxLayout):
         
         i=0
         print(i)
-        
         for elem in self.listeclients:
             print(elem, i)
-            self.liste_lab.append(Label(text = elem["Nom"]+ " "+elem["Prenom"]))
-            self.liste_but.append(Button(text = "confirm", on_press = self.ShowClient, id = i ))
+            self.liste_lab.append(Label(text = elem["Nom"]+ " "+elem["Prenom"]+" "+elem["Date de naissance"]))
+            self.liste_but.append(Button(text = "confirm", on_press = self.ShowClient, id = str(i) ))
             self.add_widget(self.liste_lab[i])
             self.add_widget(self.liste_but[i])
             i+=1
         
-        self.client.close()
+        
     def ShowClient(self,btn):
         print(btn.id)
-        client = self.listeclients[btn.id]
+        Nom = (self.liste_lab[int(btn.id)].text).split(" ")[0]
+        Prenom = (self.liste_lab[int(btn.id)].text).split(" ")[1]
+        Ddn = (self.liste_lab[int(btn.id)].text).split(" ")[2]
+        self.clientdb = self.collection.find_one({"Nom" : Nom, "Prenom" : Prenom, "Date de naissance" : Ddn})
+        self.clear_widgets()
+        self.setupForms()
+        for elem in range(len(self.liste_lab)):
+
+            try:
+                self.liste_input[elem].text = self.clientdb[self.liste_lab[elem].text]
+                self.add_widget(self.liste_lab[elem])
+                self.add_widget(self.liste_input[elem])
+            except:
+                self.add_widget(self.liste_lab[elem])
+                self.add_widget(self.liste_input[elem])
+        self.add_widget(Button(text = "update", on_press = self.update))
+    def update(self,btn):
+        post= {}
+        for elem in range(len(self.liste_lab)):
+            if self.liste_input[elem].text != "":
+                post[self.liste_lab[elem].text] = self.liste_input[elem].text
+        self.collection.update_one(self.clientdb,{"$set" : post})
+        self.client.close()
+        self.clear_widgets()
+        self.menu()
 class go(App):
     def build(self):
         gone= Application()
