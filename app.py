@@ -17,98 +17,125 @@ def dbConn():
     try: db.command("ServerStatus")
     except Exception as e: print(e)
     else: print("you are connected")
-    return db
+    return db, client
 class Application(BoxLayout):
     def build(self):
           
         self.title="okok"
         self.orientation='vertical'
-        self.jeu=0
-        self.ancien_jeu = -1
-        self.label = Label(text = "Mastermind", size_hint = (1,0.5))
-        self.add_widget(self.label)
-        self.colors =  {"red" : [1,0,0,1], "green" : [0,1,0,1],"yellow":[1,1,0,1],"blue":[0,0,1,1],"pink" : [1,0.412,0.706,1] ,"dark" : [0,0,0,1]}
-        self.db = dbConn()
+        self.label = Label(text = "Accueil", size_hint = (1,0.5))
+        
         self.menu()
     def menu(self):
+        self.add_widget(self.label)
         self.btn = Button(text = "Ajouter client", on_press = self.ajt)
-        self.btn2 = Button(text = "Chercher client")
-        self.jeu+=1 
+        self.btn2 = Button(text = "Chercher client",on_press = self.chercher)
         self.add_widget(self.btn)
         self.add_widget(self.btn2)
         self.run = True
+        self.setupForms()
+    def setupForms(self):
+        self.liste_lab = []
+        self.liste_input = []
+        self.labelNom = Label(text = "Nom")
+        self.liste_lab.append(self.labelNom)
+        self.inputNom = TextInput()
+        self.liste_input.append(self.inputNom)
+        self.labelPrenom = Label(text = "Prenom")
+        self.liste_lab.append(self.labelPrenom)
+        self.inputPrenom = TextInput()
+        self.liste_input.append(self.inputPrenom)
+        self.labelDatedenaissance = Label(text = "Date de naissance")
+        self.liste_lab.append(self.labelDatedenaissance)
+        self.inputDatedenaissance= TextInput()
+        self.liste_input.append(self.inputDatedenaissance)
+        self.labelSexe = Label(text = "Sexe")
+        self.liste_lab.append(self.labelSexe)
+        self.inputSexe = TextInput()
+        self.liste_input.append(self.inputSexe)
+        self.labelStatussocial = Label(text = "Status social(*)")
+        self.liste_lab.append(self.labelStatussocial)
+        self.inputStatussocial = TextInput()
+        self.liste_input.append(self.inputStatussocial)
+        self.labelNum = Label(text = "Numéro de registre national(*)")
+        self.liste_lab.append(self.labelNum)
+        self.inputNum = TextInput()
+        self.liste_input.append(self.inputNum)
+        self.labelPaysdorigine = Label(text = "Pays d'origine(*)")
+        self.liste_lab.append( self.labelPaysdorigine)
+        self.inputPaysdorigine = TextInput()
+        self.liste_input.append(self.inputPaysdorigine)
+        self.labelGSM = Label(text = "GSM")
+        self.liste_lab.append(self.labelGSM)
+        self.inputGSM = TextInput()
+        self.liste_input.append(self.inputGSM)
+        self.labelFixe = Label(text = "Fixe(*)")
+        self.liste_lab.append( self.labelFixe)
+        self.inputFixe = TextInput()
+        self.liste_input.append(self.inputFixe)
+        self.labelAdresse = Label(text = "Adresse")
+        self.liste_lab.append(self.labelAdresse)
+        self.inputAdresse = TextInput()
+        self.liste_input.append(self.inputAdresse)
+        self.labelEmail = Label(text = "Email")
+        self.liste_lab.append(self.labelEmail)
+        self.inputEmail = TextInput()
+        self.liste_input.append(self.inputEmail)
     def ajt(self,btn):
         self.clear_widgets()
         grid = GridLayout(rows=20,cols=2)
-        
-        liste_lab = []
-        liste_input = []
-        labelNom = Label(text = "Nom")
-        liste_lab.append(labelNom)
-        inputNom = TextInput()
-        liste_input.append(inputNom)
-        labelPrenom = Label(text = "Prenom")
-        liste_lab.append(labelPrenom)
-        inputPrenom = TextInput()
-        liste_input.append(inputPrenom)
-        labelDatedenaissance = Label(text = "Date de naissance")
-        liste_lab.append(labelDatedenaissance)
-        inputDatedenaissance= TextInput()
-        liste_input.append(inputDatedenaissance)
-        labelSexe = Label(text = "Sexe")
-        liste_lab.append(labelSexe)
-        inputSexe = TextInput()
-        liste_input.append(inputSexe)
-        labelStatussocial = Label(text = "Status social(*)")
-        liste_lab.append(labelStatussocial)
-        inputStatussocial = TextInput()
-        liste_input.append(inputStatussocial)
-        labelNum = Label(text = "Numéro de registre national(*)")
-        liste_lab.append(labelNum)
-        inputNum = TextInput()
-        liste_input.append(inputNum)
-        labelPaysdorigine = Label(text = "Pays d'origine(*)")
-        liste_lab.append( labelPaysdorigine)
-        inputPaysdorigine = TextInput()
-        liste_input.append(inputPaysdorigine)
-        labelGSM = Label(text = "GSM")
-        liste_lab.append(labelGSM)
-        inputGSM = TextInput()
-        liste_input.append(inputGSM)
-        labelFixe = Label(text = "Fixe(*)")
-        liste_lab.append( labelFixe)
-        inputFixe = TextInput()
-        liste_input.append(inputFixe)
-        labelAdresse = Label(text = "Adresse")
-        liste_lab.append(labelAdresse)
-        inputAdresse = TextInput()
-        liste_input.append(inputAdresse)
-        labelEmail = Label(text = "Email")
-        liste_lab.append(labelEmail)
-        inputEmail = TextInput()
-        liste_input.append(inputEmail)
-        for elem in range(len(liste_lab)):
-            grid.add_widget(liste_lab[elem])
-            grid.add_widget(liste_input[elem])
+        for elem in range(len(self.liste_lab)):
+            grid.add_widget(self.liste_lab[elem])
+            grid.add_widget(self.liste_input[elem])
     
         self.add_widget(grid)
         grid.add_widget(Button(text = "Ajouter", on_press = self.Confirm))
     def Confirm(self,btn):
-        print(inputNom.text)
-        """
-        post1 = {
-                "Nom" : inputNom.Text,
-                "Prenom": "Antoine",
-                "Date de Naissance": "06/10/2021"
-            }
-        
+        self.db, self.client = dbConn()
         collection = self.db.Guns
-        collection.insert_one(post1)
-        """
-      
-        print(0)
-        pass
-         
+        post = {}
+        for elem in range(len(self.liste_lab)):
+            if self.liste_input[elem].text != "":
+                post[self.liste_lab[elem].text] = self.liste_input[elem].text
+        collection.insert_one(post)
+        self.client.close()
+        print("Fait")
+        self.clear_widgets()
+        self.menu()
+    def chercher(self, btn):
+        self.clear_widgets()
+        self.add_widget(self.labelNom)
+        self.add_widget(self.inputNom)
+        self.add_widget(Button(text = "Chercher", on_press= self.Chercher))
+        
+    def Chercher(self, btn):
+        self.db, self.client = dbConn()
+        self.collection = self.db.Guns
+        self.listeclients = self.collection.find({"Nom": self.inputNom.text})
+        for elem in self.listeclients:
+            print(elem)
+        
+        self.ShowClients()
+    def ShowClients(self):
+        self.clear_widgets()
+        self.liste_lab = []
+        self.liste_but = []
+        
+        i=0
+        print(i)
+        
+        for elem in self.listeclients:
+            print(elem, i)
+            self.liste_lab.append(Label(text = elem["Nom"]+ " "+elem["Prenom"]))
+            self.liste_but.append(Button(text = "confirm", on_press = self.ShowClient, id = i ))
+            self.add_widget(self.liste_lab[i])
+            self.add_widget(self.liste_but[i])
+            i+=1
+        
+        self.client.close()
+    def ShowClient(self,btn):
+        print(btn.id)
+        client = self.listeclients[btn.id]
 class go(App):
     def build(self):
         gone= Application()
