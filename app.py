@@ -31,6 +31,7 @@ class Application(BoxLayout):
         self.add_widget(self.btn2)
         self.run = True
         self.setupForms()
+
     def setupForms(self):
         self.liste_lab = []
         self.liste_input = []
@@ -78,6 +79,7 @@ class Application(BoxLayout):
         self.liste_lab.append(self.labelEmail)
         self.inputEmail = TextInput()
         self.liste_input.append(self.inputEmail)
+        
     def ajt(self,btn):
         self.clear_widgets()
         grid = GridLayout(rows=20,cols=2)
@@ -89,7 +91,7 @@ class Application(BoxLayout):
         grid.add_widget(Button(text = "Ajouter", on_press = self.Confirm))
     def Confirm(self,btn):
         self.db, self.client = dbConn()
-        collection = self.db.Guns
+        collection = self.db.Clients
         post = {}
         for elem in range(len(self.liste_lab)):
             if self.liste_input[elem].text != "":
@@ -107,8 +109,8 @@ class Application(BoxLayout):
         
     def Chercher(self, btn):
         self.db, self.client = dbConn()
-        self.collection = self.db.Guns
-        self.listeclients = self.collection.find({"Nom": self.inputNom.text})
+        self.collection = self.db.Clients
+        self.listeclients = self.collection.find({"Nom": {'$regex': self.inputNom.text}})
       
         self.ShowClients()
     def ShowClients(self):
@@ -125,7 +127,9 @@ class Application(BoxLayout):
             self.add_widget(self.liste_lab[i])
             self.add_widget(self.liste_but[i])
             i+=1
-        
+        if i==0:
+            self.clear_widgets()
+            self.add_widget(Button(text="Personne, aller en arrière", on_press = self.chercher))
         
     def ShowClient(self,btn):
         print(btn.id)
